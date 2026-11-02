@@ -9,7 +9,7 @@ import { prisma } from './db.js';
 import { requireAuth } from './middleware/auth.js';
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_URL || true }));
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/preferences', preferencesRoutes);
