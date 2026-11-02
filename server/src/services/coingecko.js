@@ -9,8 +9,15 @@ export async function getPrices(ids) {
   }
 
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${key}&vs_currencies=usd&include_24hr_change=true`;
-  const response = await fetch(url);
+  let response;
+  try {
+    response = await fetch(url, { headers: { Accept: 'application/json' } });
+  } catch (err) {
+    if (cached) return cached.data;
+    throw err;
+  }
   if (!response.ok) {
+    if (cached) return cached.data;
     throw new Error(`CoinGecko error: ${response.status}`);
   }
 

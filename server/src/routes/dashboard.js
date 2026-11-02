@@ -45,15 +45,19 @@ router.get('/', requireAuth, async (req, res) => {
     getMeme(),
   ]);
 
-  const value = r => (r.status === 'fulfilled' ? r.value : null);
-
-  res.json({
-    preference,
-    news: value(news),
-    prices: value(prices),
-    insight: value(insight),
-    meme: value(meme),
-  });
+  const value = (r, name) => {
+    if (r.status === 'fulfilled') return r.value;
+    console.error(`Dashboard section "${name}" failed:`, r.reason?.message);
+    return null;
+  };
+    
+    res.json({
+      preference,
+      news: value(news, 'news'),
+      prices: value(prices, 'prices'),
+      insight: value(insight, 'insight'),
+      meme: value(meme, 'meme'),
+    });
 });
 
 export default router;
