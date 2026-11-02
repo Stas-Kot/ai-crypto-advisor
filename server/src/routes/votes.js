@@ -48,4 +48,18 @@ router.post('/', requireAuth, async (req, res) => {
   res.json(vote);
 });
 
+router.delete('/', requireAuth, async (req, res) => {
+  const { section, itemId } = req.body;
+
+  if (!SECTIONS.includes(section) || !itemId || typeof itemId !== 'string') {
+    return res.status(400).json({ error: 'section and itemId are required' });
+  }
+
+  await prisma.vote.deleteMany({
+    where: { userId: req.user.id, section, itemId },
+  });
+
+  res.json({ ok: true });
+});
+
 export default router;
