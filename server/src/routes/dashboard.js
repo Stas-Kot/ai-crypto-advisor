@@ -38,26 +38,32 @@ router.get('/', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'Complete onboarding first' });
   }
 
+  const wants = type => preference.contentTypes.includes(type);
+
+  // Sections the user did not choose are not requested at all (undefined).
   const [news, prices, insight, meme] = await Promise.allSettled([
-    getNews(preference.assets),
-    getPrices(preference.assets),
+    wants('Market News') ? getNews(preference.assets) : undefined,
+    wants('Charts') ? getPrices(preference.assets) : undefined,
     getDailyInsight(req.user.id, preference),
-    getMeme(),
+    wants('Fun') ? getMeme() : undefined,
   ]);
 
+  const errors = {};
   const value = (r, name) => {
     if (r.status === 'fulfilled') return r.value;
+    errors[name] = r.reason?.message;
     console.error(`Dashboard section "${name}" failed:`, r.reason?.message);
     return null;
   };
-    
-    res.json({
-      preference,
-      news: value(news, 'news'),
-      prices: value(prices, 'prices'),
-      insight: value(insight, 'insight'),
-      meme: value(meme, 'meme'),
-    });
+
+  res.json({
+    preference,
+    news: value(news, 'news'),
+    prices: value(prices, 'prices'),
+    insight: value(insight, 'insight'),
+    meme: value(meme, 'meme'),
+    errors,
+  });
 });
 
 export default router;

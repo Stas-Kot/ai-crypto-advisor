@@ -60,6 +60,8 @@ export default function Dashboard() {
   }
 
   const unavailable = <p className="muted">This section is temporarily unavailable.</p>;
+  const contentTypes = data?.preference?.contentTypes ?? [];
+  const wants = type => contentTypes.includes(type);
 
   return (
     <div className="dashboard">
@@ -83,53 +85,57 @@ export default function Dashboard() {
 
       {data && (
         <div className="grid">
-          <section className="card">
-            <h2>Market News</h2>
-            {data.news ? (
-              <ul className="news-list">
-                {data.news.map(n => (
-                  <li key={n.id}>
-                    <a href={n.url} target="_blank" rel="noreferrer">
-                      {n.title}
-                    </a>
-                    <span className="muted"> · {n.source}</span>
-                    <VoteButtons
-                      value={votes[key('news', n.id)]}
-                      onVote={v => vote('news', n.id, v)}
-                    />
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              unavailable
-            )}
-          </section>
-
-          <section className="card">
-            <h2>Coin Prices</h2>
-            {data.prices ? (
-              <>
-                <ul className="price-list">
-                  {data.prices.map(p => (
-                    <li key={p.id}>
-                      <span className="coin">{p.id}</span>
-                      <span>${p.price.toLocaleString()}</span>
-                      <span className={p.change24h >= 0 ? 'up' : 'down'}>
-                        {p.change24h >= 0 ? '+' : ''}
-                        {p.change24h.toFixed(2)}%
-                      </span>
+          {wants('Market News') && (
+            <section className="card">
+              <h2>Market News</h2>
+              {data.news ? (
+                <ul className="news-list">
+                  {data.news.map(n => (
+                    <li key={n.id}>
+                      <a href={n.url} target="_blank" rel="noreferrer">
+                        {n.title}
+                      </a>
+                      <span className="muted"> · {n.source}</span>
+                      <VoteButtons
+                        value={votes[key('news', n.id)]}
+                        onVote={v => vote('news', n.id, v)}
+                      />
                     </li>
                   ))}
                 </ul>
-                <VoteButtons
-                  value={votes[key('prices', 'prices')]}
-                  onVote={v => vote('prices', 'prices', v)}
-                />
-              </>
-            ) : (
-              unavailable
-            )}
-          </section>
+              ) : (
+                unavailable
+              )}
+            </section>
+          )}
+
+          {wants('Charts') && (
+            <section className="card">
+              <h2>Coin Prices</h2>
+              {data.prices ? (
+                <>
+                  <ul className="price-list">
+                    {data.prices.map(p => (
+                      <li key={p.id}>
+                        <span className="coin">{p.id}</span>
+                        <span>${p.price.toLocaleString()}</span>
+                        <span className={p.change24h >= 0 ? 'up' : 'down'}>
+                          {p.change24h >= 0 ? '+' : ''}
+                          {p.change24h.toFixed(2)}%
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <VoteButtons
+                    value={votes[key('prices', 'prices')]}
+                    onVote={v => vote('prices', 'prices', v)}
+                  />
+                </>
+              ) : (
+                unavailable
+              )}
+            </section>
+          )}
 
           <section className="card">
             <h2>AI Insight of the Day</h2>
@@ -146,21 +152,23 @@ export default function Dashboard() {
             )}
           </section>
 
-          <section className="card">
-            <h2>Fun Crypto Meme</h2>
-            {data.meme ? (
-              <>
-                <img className="meme" src={data.meme.url} alt={data.meme.title} />
-                <p className="muted">{data.meme.title}</p>
-                <VoteButtons
-                  value={votes[key('meme', data.meme.id)]}
-                  onVote={v => vote('meme', data.meme.id, v)}
-                />
-              </>
-            ) : (
-              unavailable
-            )}
-          </section>
+          {wants('Fun') && (
+            <section className="card">
+              <h2>Fun Crypto Meme</h2>
+              {data.meme ? (
+                <>
+                  <img className="meme" src={data.meme.url} alt={data.meme.title} />
+                  <p className="muted">{data.meme.title}</p>
+                  <VoteButtons
+                    value={votes[key('meme', data.meme.id)]}
+                    onVote={v => vote('meme', data.meme.id, v)}
+                  />
+                </>
+              ) : (
+                unavailable
+              )}
+            </section>
+          )}
         </div>
       )}
     </div>
