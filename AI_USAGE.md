@@ -28,6 +28,7 @@ These are real problems found while testing, which required fixing or rethinking
 - **Deployment fixes.** `tsx` had to move from `devDependencies` to `dependencies` for Render; a file name that differed only in letter case worked on macOS but failed on Vercel's Linux build and had to be renamed; the CORS `CLIENT_URL` must not contain a path.
 - **UX issues I noticed myself.** Votes could not be removed once set (added a delete endpoint and toggle behavior), and the dashboard grid showed three cards in the first row and one in the second (changed to a 2x2 layout).
 
+
 ## What I verified myself
 
 - Every endpoint with curl, including error cases (wrong password, missing token, repeated votes).
