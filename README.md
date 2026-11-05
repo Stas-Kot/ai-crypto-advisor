@@ -159,7 +159,7 @@ Every vote is saved as a row in `Vote`:
 | `section` | `news`, `prices`, `insight` or `meme` |
 | `itemId` | the exact item (news id, insight date, meme id) |
 | `value` | +1 or -1 |
-| `metadata` | context at vote time: the user's `investorType` and `assets` |
+| `metadata` | context at vote time (investor type, assets, content types), built on the server from the user’s saved preferences, never taken from the client |
 | `createdAt` | when |
 
 Combined with `Preference` (assets, investor type, content types) and `DailyInsight` (the generated text), this already forms a labeled dataset: *(user profile, content item, rating)*.

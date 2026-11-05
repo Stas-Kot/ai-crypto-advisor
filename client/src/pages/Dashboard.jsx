@@ -26,10 +26,10 @@ export default function Dashboard() {
     }
   }, []);
 
-    useEffect(() => {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      load();
-    }, [load]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load();
+  }, [load]);
 
   async function vote(section, itemId, value) {
     const k = key(section, itemId);

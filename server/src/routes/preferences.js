@@ -6,6 +6,7 @@ const router = Router();
 
 const INVESTOR_TYPES = ['HODLer', 'Day Trader', 'NFT Collector'];
 const CONTENT_TYPES = ['Market News', 'Charts', 'Social', 'Fun'];
+const ASSETS = ['bitcoin', 'ethereum', 'solana', 'cardano', 'dogecoin', 'ripple'];
 
 router.get('/', requireAuth, async (req, res) => {
   const preference = await prisma.preference.findUnique({
@@ -17,8 +18,8 @@ router.get('/', requireAuth, async (req, res) => {
 router.post('/', requireAuth, async (req, res) => {
   const { assets, investorType, contentTypes } = req.body;
 
-  if (!Array.isArray(assets) || assets.length === 0) {
-    return res.status(400).json({ error: 'Select at least one asset' });
+  if (!Array.isArray(assets) || assets.length === 0 || !assets.every(a => ASSETS.includes(a))) {
+    return res.status(400).json({ error: 'Invalid assets' });
   }
   if (!INVESTOR_TYPES.includes(investorType)) {
     return res.status(400).json({ error: 'Invalid investor type' });
@@ -31,10 +32,13 @@ router.post('/', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'Invalid content types' });
   }
 
+  const uniqueAssets = [...new Set(assets)];
+  const uniqueContentTypes = [...new Set(contentTypes)];
+
   const preference = await prisma.preference.upsert({
     where: { userId: req.user.id },
-    update: { assets, investorType, contentTypes },
-    create: { userId: req.user.id, assets, investorType, contentTypes },
+    update: { assets: uniqueAssets, investorType, contentTypes: uniqueContentTypes },
+    create: { userId: req.user.id, assets: uniqueAssets, investorType, contentTypes: uniqueContentTypes },
   });
 
   res.json(preference);

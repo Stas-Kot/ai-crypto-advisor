@@ -40,6 +40,7 @@ model Vote {
   value     Int
   metadata  Json?
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@unique([userId, section, itemId])
 }

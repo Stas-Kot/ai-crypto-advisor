@@ -15,13 +15,13 @@ router.get('/', requireAuth, async (req, res) => {
 });
 
 router.post('/', requireAuth, async (req, res) => {
-  const { section, itemId, value, metadata } = req.body;
+  const { section, itemId, value } = req.body;
 
   if (!SECTIONS.includes(section)) {
     return res.status(400).json({ error: 'Invalid section' });
   }
-  if (!itemId || typeof itemId !== 'string') {
-    return res.status(400).json({ error: 'itemId is required' });
+  if (!itemId || typeof itemId !== 'string' || itemId.length > 100) {
+    return res.status(400).json({ error: 'Invalid itemId' });
   }
   if (value !== 1 && value !== -1) {
     return res.status(400).json({ error: 'value must be 1 or -1' });
@@ -32,9 +32,9 @@ router.post('/', requireAuth, async (req, res) => {
   });
 
   const context = {
-    ...(metadata ?? {}),
     investorType: preference?.investorType ?? null,
     assets: preference?.assets ?? [],
+    contentTypes: preference?.contentTypes ?? [],
   };
 
   const vote = await prisma.vote.upsert({
