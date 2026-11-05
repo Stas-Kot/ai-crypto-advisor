@@ -7,13 +7,17 @@ const FALLBACKS = {
     'NFT markets are driven by community and liquidity. Check trading volume and holder distribution before buying, not just the floor price.',
 };
 
-export async function getInsight({ assets = [], investorType = 'HODLer' }) {
+export async function getInsight({ assets = [], investorType = 'HODLer', contentTypes = [] }) {
   const fallback = FALLBACKS[investorType] ?? FALLBACKS.HODLer;
 
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) return fallback;
 
-  const prompt = `You are a concise crypto analyst. Give one short "insight of the day" (3-4 sentences) for a ${investorType} who is interested in: ${assets.join(', ') || 'the crypto market'}. Be practical, avoid hype. Do not give financial advice or price predictions, and do not mention specific upgrades, dates or prices; keep it general and practical.`;
+  const social = contentTypes.includes('Social')
+    ? ' Also briefly touch on community sentiment and social media trends around these assets.'
+    : '';
+
+  const prompt = `You are a concise crypto analyst. Give one short "insight of the day" (3-4 sentences) for a ${investorType} who is interested in: ${assets.join(', ') || 'the crypto market'}. Be practical, avoid hype. Do not give financial advice or price predictions, and do not mention specific upgrades, dates or prices; keep it general and practical.${social}`;
 
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {

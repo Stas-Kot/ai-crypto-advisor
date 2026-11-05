@@ -143,7 +143,7 @@ npm run dev                 # http://localhost:5173
 - **Votes are idempotent.** A vote is unique per `(user, section, item)` and is upserted, so repeated clicks change the vote instead of creating duplicates.
 - **Optimistic UI.** Votes update instantly in the interface and roll back if the request fails.
 - **Prices.** CoinGecko is the data source. An optional free Demo API key (`COINGECKO_API_KEY`) avoids rate limits (HTTP 429) that happen on the shared IPs of free hosting. Prices are cached for one minute, and the last cached values are served if a request fails. Prices are only requested for users who selected "Charts".
-- **Personalization.** Sections are returned only for the content types the user chose, so unselected sections are not fetched at all, which also saves free-tier API quota. The "Social" option currently influences only the tone of the AI insight, since there is no dedicated social section.
+- **Personalization.** - **Personalization.** Sections are returned only for the content types the user chose, so unselected sections are not fetched at all, which also saves free-tier API quota. The "Social" option adds a focus on community sentiment and social media trends to the AI insight, since there is no dedicated social section.
 
 ## How feedback can be used to train and improve recommendations (bonus)
 

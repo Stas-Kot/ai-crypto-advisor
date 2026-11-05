@@ -19,6 +19,7 @@ async function getDailyInsight(userId, preference) {
   const text = await getInsight({
     assets: preference.assets,
     investorType: preference.investorType,
+    contentTypes: preference.contentTypes,
   });
 
   await prisma.dailyInsight.upsert({
